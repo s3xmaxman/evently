@@ -30,15 +30,19 @@ interface FileUploadProps {
 
 export function FileUploader({ imageUrl, onFieldChange, setFiles }: FileUploadProps) {
   const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
-    setFiles(acceptedFiles)
-    onFieldChange(convertFileToUrl(acceptedFiles[0]))
+      // ドロップされたファイルをセットする
+      setFiles(acceptedFiles)
+      // フィールドの変更をトリガーするために、ファイルをURLに変換して渡す
+      onFieldChange(convertFileToUrl(acceptedFiles[0]))
   }, [])
 
+  // useDropzoneフックからgetRootPropsとgetInputPropsを取得する
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    accept: 'image/*' ? generateClientDropzoneAccept(['image/*']) : undefined,
+      // onDropメソッドを指定することで、ファイルのドロップ時に実行される処理を設定する
+      onDrop,
+      // 受け入れるファイルの種類を指定する
+      accept: 'image/*' ? generateClientDropzoneAccept(['image/*']) : undefined,
   })
-
   return (
     <div
       {...getRootProps()}
