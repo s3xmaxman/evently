@@ -1,4 +1,4 @@
-import React, { startTransition, useState } from 'react'
+import React, { startTransition, useEffect, useState } from 'react'
 import {
     Select,
     SelectContent,
@@ -21,6 +21,7 @@ import {
 
 import { ICategory } from '@/lib/database/models/categoty.model'
 import { Input } from '../ui/input'
+import { createCategory, getAllCategories } from '@/lib/actions/category.actions'
   
 
 type DropDownProps = {
@@ -32,9 +33,28 @@ const Dropdown = ({ value, onChangeHandler}: DropDownProps) => {
   const  [categories, setCategories] = useState<ICategory[]>([])
   const [newCategory, setNewCategory] = useState('')
 
+  
   const handleAddCategory = () => {
-      
+    // createCategory メソッドを使用して、トリム（前後の空白削除）された新しいカテゴリを作成
+    createCategory({
+      categoryName: newCategory.trim()
+    })
+    .then((category) => {
+        // 成功時、カテゴリの状態を更新して新しく作成されたカテゴリをカテゴリリストに追加
+        setCategories((prevState) => [...prevState, category])
+    })
   }
+
+  useEffect(() => {
+    const getCategories = async () => {
+      const categoryList = await getAllCategories()
+      categoryList && setCategories(categoryList as ICategory[])
+    }
+    getCategories()
+  }, [])
+
+
+
   return (
     <Select defaultValue={value} onValueChange={onChangeHandler}>
         <SelectTrigger className="select-field">
@@ -60,7 +80,7 @@ const Dropdown = ({ value, onChangeHandler}: DropDownProps) => {
               focus:text-primary-500
               '
             >
-                Open
+                新しいカテゴリを追加
             </AlertDialogTrigger>
             <AlertDialogContent className="bg-white">
                 <AlertDialogHeader>
