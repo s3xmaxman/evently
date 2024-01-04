@@ -1,4 +1,4 @@
-import { getEventById } from '@/lib/actions/event.acitons'
+import { getEventById } from '@/lib/actions/event.actions'
 import { formatDateTime } from '@/lib/utils'
 import { SearchParamProps } from '@/types'
 import Image from 'next/image'
