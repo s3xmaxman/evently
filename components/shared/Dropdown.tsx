@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/alert-dialog"
     
 
-import { ICategory } from '@/lib/database/models/categoty.model'
+import { ICategory } from '@/lib/database/models/category.model'
 import { Input } from '../ui/input'
 import { createCategory, getAllCategories } from '@/lib/actions/category.actions'
   
