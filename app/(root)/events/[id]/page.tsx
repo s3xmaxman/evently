@@ -1,16 +1,23 @@
-import { getEventById } from '@/lib/actions/event.actions'
+import CheckoutButton from '@/components/shared/CheckoutButton'
+import Collection from '@/components/shared/Collection'
+import { getEventById, getRelatedEventsByCategory } from '@/lib/actions/event.actions'
 import { formatDateTime } from '@/lib/utils'
 import { SearchParamProps } from '@/types'
 import Image from 'next/image'
 import React from 'react'
 
-const EventDetails = async({ params: { id }}: SearchParamProps) => {
+const EventDetails = async({ params: { id }, searchParams }:SearchParamProps  ) => {
 
     const event = await getEventById(id)
 
-   
+    const relatedEvents = await getRelatedEventsByCategory({
+        categoryId: event.category._id,
+        eventId: event._id,
+        page: searchParams.page as string,
+    })
     
     return (
+      <>
         <section className="flex justify-center bg-primary-50 bg-dotted-pattern bg-contain">
         <div className="grid grid-cols-1 md:grid-cols-2 2xl:max-w-7xl">
           <Image 
@@ -42,7 +49,7 @@ const EventDetails = async({ params: { id }}: SearchParamProps) => {
               </div>
             </div>
   
-            {/* <CheckoutButton event={event} /> */}
+            <CheckoutButton event={event} />
   
             <div className="flex flex-col gap-5">
               <div className='flex gap-2 md:gap-3'>
@@ -73,6 +80,20 @@ const EventDetails = async({ params: { id }}: SearchParamProps) => {
           </div>
         </div>
       </section>
+
+      <section className='wrapper my-8 flex flex-col gap-8 md:gap-12'>
+        <h2 className='h2-bold'>関連イベント</h2>
+        <Collection
+            data={relatedEvents?.data}
+            emptyTitle="No Events Found"
+            emptyStateSubText="Come back later"
+            collectionType="All_Events"
+            limit={3}
+            page={ searchParams.page as string }
+            totalPages={relatedEvents?.totalPages}
+        />
+      </section>
+    </>
     )
 }
 
